@@ -12,7 +12,12 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/templates/index.html')
+  res.sendFile(__dirname + '/public/index.html')
+})
+
+app.post('/api/testpost', (req, res) => {
+  console.log(req.body)
+  res.json(req.body)
 })
 
 //            SERVICIOS           //
@@ -206,7 +211,7 @@ app.get('/api/reservas', async (req, res) => {
   }
 })
 
-// CREAR NUEVO RESERVAS
+// CREAR NUEVA RESERVAS
 app.post('/api/reservas', async (req, res) => {
   try {
     const connection = await pool.getConnection();

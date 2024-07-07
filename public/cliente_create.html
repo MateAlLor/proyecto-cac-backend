@@ -7,7 +7,6 @@
   <link rel="icon" href="assets/img/LogoSinFondo.png">
   <link rel="stylesheet" href="assets/style/style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
-  <script src="assets/scripts/validarFormulario.js"></script>
   <title>Chicas Beauty</title>
 
   <!-- Script de Include HTML (sacado de W3-School) -->
@@ -15,6 +14,34 @@
   <script src="assets/scripts/template_include.js"></script>
   <script src="https://kit.fontawesome.com/27acf753ad.js" crossorigin="anonymous"></script>
 
+  <!-- Script de validación de formulario -->
+  <script>
+    function validarFormulario() {
+      var name = document.getElementById("name").value
+      var phone = document.getElementById("phone").value
+      var mail = document.getElementById("mail").value
+      var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+
+      let casillaMarcada = false
+      if (checkboxes.length > 0) {
+        casillaMarcada = true
+      }
+
+
+      if (name === '') {
+        alert("El nombre no puede estar vacío")
+        event.preventDefault();
+      } else if (phone === '' && mail === '') {
+        alert("Debe brindar al menos un medio de contacto (teléfono o correo electrónico)")
+        event.preventDefault();
+      } else if (!casillaMarcada) {
+        alert("Debe seleccionar al menos un tratamiento")
+        event.preventDefault();
+      } else {
+        alert("Información enviada correctamente")
+      }
+    }
+  </script>
 </head>
 
 <body>
@@ -49,69 +76,39 @@
   </div>
 
   <div class="title">
-    <h1>Generar nueva Reserva</h1>
+    <h1>Registrar Cliente</h1>
   </div>
   <div>
 
     <!-- Formulario -->
     <!-- El Form que cumple con todos los requisitos del TP es el de "Contacto" -->
-    <form onsubmit="validarFormulario(['fecha', 'hora'], ['checkboxMenu'], ['radioGroup'])" action="/api/testpost" method="post">
+    <form onsubmit="validarFormulario()" method="post">
       <div class="formulario">
         <ul class="form-container">
           <li class="group">
-            <h4 class="form-label">Selecciona el cliente:</h4>
-            <div class="radioGroup" id="radioGroup">
-              <script>
-                fetch("http://localhost:3000/api/clientes")
-                  .then(response => response.json())
-                  .then(data => {
-                    data.forEach(cliente => {
-                      html = `
-                        <div class="radioLine">
-                          <label for="c${cliente.idCliente}" class="form-label">${cliente.nombres} ${cliente.apellidos} - ID: ${cliente.idCliente}</label>
-                          <input type="radio" id="c${cliente.idCliente}" name="radioButton" value="${cliente.idCliente}">
-                        </div>
-                      `
-                      document.querySelector("#radioGroup").innerHTML += html;
-                    });
-                  })
-              </script>
-            </div>
+            <label for="apellido" class="form-label">Apellidos</label>
+            <input type="text" class="apellido form-input" id="apellido" placeholder="" />
           </li>
           <li class="group">
-            <h4 for="fecha" class="form-label">Fecha de Reserva: </h4>
-            <input type="date" class="fecha form-input" id="fecha" placeholder="" />
+            <label for="nombre" class="form-label">Nombres</label>
+            <input type="text" class="nombre form-input" id="nombre" placeholder="" />
           </li>
-          <ul class="form-container">
-            <li class="group">
-              <h4 for="hora" class="form-label">Hora de Reserva: </h4>
-              <input type="time" class="hora form-input" id="hora" placeholder="" />
-            </li>
-            <li class="group">
-              <!-- Checkbox del formulario -->
-              <h4 class="form-label">Selecciona los servicios deseados:</h4>
-              <div class="checkboxMenu" id="checkboxMenu">
-                <script>
-                  fetch("http://localhost:3000/api/servicios")
-                    .then(response => response.json())
-                    .then(data => {
-                      data.forEach(servicio => {
-                        html = `
-                        <div class="checkboxOption">
-                          <label for="s${servicio.idServicio}" class="form-label">${servicio.nombre}</label>
-                          <input type="checkbox" id="s${servicio.idServicio}" name="s${servicio.idServicio}" value="true">
-                        </div>
-                      `
-                        document.querySelector("#checkboxMenu").innerHTML += html;
-                      });
-                    })
-                </script>
-              </div>
-            </li>
-            <li class="button">
-              <input type="submit" value="Enviar">
-            </li>
-          </ul>
+          <li class="group">
+            <label for="dir" class="form-label">Dirección</label>
+            <input type="text" class="dir form-input" id="dir" placeholder="" />
+          </li>
+          <li class="group">
+            <label for="tel" class="form-label">Teléfono</label>
+            <input type="tel" class="tel form-input" id="tel" placeholder="" />
+          </li>
+          <li class="group">
+            <label for="mail" class="form-label">Correo Electrónico</label>
+            <input type="mail" class="mail form-input" id="mail" placeholder="" />
+          </li>
+          <li class="button">
+            <input type="submit" value="Enviar">
+          </li>
+        </ul>
       </div>
     </form>
   </div>
@@ -127,7 +124,7 @@
   <footer class="render-footer"></footer>
 
   <!-- Llamar a función que incluye los templates -->
-
+  
   <script>includeNavbar()</script>
   <script>includeFooter()</script>
 </body>
