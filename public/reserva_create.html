@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="assets/img/LogoSinFondo.png">
+  <link rel="stylesheet" href="assets/style/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <title>Chicas Beauty</title>
+
+  <!-- Script de Include HTML (sacado de W3-School) -->
+  <!-- Aclaración: El uso de este script, al implementarlo colocando el atributo "include-html" tira error en validator.w3.org -->
+  <script src="assets/scripts/template_include.js"></script>
+  <script src="https://kit.fontawesome.com/27acf753ad.js" crossorigin="anonymous"></script>
+
+  <!-- Script de validación de formulario -->
+  <script>
+    function validarFormulario() {
+      var name = document.getElementById("name").value
+      var phone = document.getElementById("phone").value
+      var mail = document.getElementById("mail").value
+      var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+
+      let casillaMarcada = false
+      if (checkboxes.length > 0) {
+        casillaMarcada = true
+      }
+
+
+      if (name === '') {
+        alert("El nombre no puede estar vacío")
+        event.preventDefault();
+      } else if (phone === '' && mail === '') {
+        alert("Debe brindar al menos un medio de contacto (teléfono o correo electrónico)")
+        event.preventDefault();
+      } else if (!casillaMarcada) {
+        alert("Debe seleccionar al menos un tratamiento")
+        event.preventDefault();
+      } else {
+        alert("Información enviada correctamente")
+      }
+    }
+  </script>
+</head>
+
+<body>
+
+  <!-- Incluir Base de Navbar -->
+  <div class="render-navbar"></div>
+
+  <!-- Carousel con Bootstrap -->
+  <div id="carousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="assets/img/vista1.jpg" class="d-block w-100" alt="..." />
+      </div>
+      <div class="carousel-item">
+        <img src="assets/img/estetica1.jpg" class="d-block w-100" alt="..." />
+      </div>
+      <div class="carousel-item">
+        <img src="assets/img/estetica2.jpg" class="d-block w-100" alt="..." />
+      </div>
+      <div class="carousel-item">
+        <img src="assets/img/estetica5.jpg" class="d-block w-100" alt="..." />
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <div class="title">
+    <h1>Haz tu reservación aqui</h1>
+  </div>
+  <div>
+
+    <!-- Formulario -->
+    <!-- El Form que cumple con todos los requisitos del TP es el de "Contacto" -->
+    <form onsubmit="validarFormulario()" method="post">
+      <div class="formulario">
+        <ul class="form-container">
+          <li class="group">
+            <h4 class="form-label">Selecciona el cliente:</h4>
+            <div class="radioGroup" id="radioGroup">
+              <script>
+                fetch("http://localhost:3000/api/clientes")
+                  .then(response => response.json())
+                  .then(data => {
+                    data.forEach(cliente => {
+                      html = `
+                        <div class="radioLine">
+                          <label for="c${cliente.idCliente}" class="form-label">${cliente.nombres} ${cliente.apellidos} - ID: ${cliente.idCliente}</label>
+                          <input type="radio" id="c${cliente.idCliente}" name="radioButton" value="${cliente.idCliente}">
+                        </div>
+                      `
+                      document.querySelector("#radioGroup").innerHTML += html;
+                    });
+                  })
+              </script>
+            </div>
+          </li>
+          <li class="group">
+            <h4 for="fecha" class="form-label">Fecha de Reserva: </h4>
+            <input type="date" class="fecha form-input" id="fecha" placeholder="" />
+          </li>
+          <ul class="form-container">
+            <li class="group">
+              <h4 for="hora" class="form-label">Hora de Reserva: </h4>
+              <input type="time" class="hora form-input" id="hora" placeholder="" />
+            </li>
+          <li class="group">
+            <!-- Checkbox del formulario -->
+            <h4 class="form-label">Selecciona los servicios deseados:</h4>
+            <div class="checkboxMenu" id="checkboxMenu">
+              <script>
+                fetch("http://localhost:3000/api/servicios")
+                  .then(response => response.json())
+                  .then(data => {
+                    data.forEach(servicio => {
+                      html = `
+                        <div class="checkboxOption">
+                          <label for="s${servicio.idServicio}" class="form-label">${servicio.nombre}</label>
+                          <input type="checkbox" id="s${servicio.idServicio}" name="s${servicio.idServicio}" value="true">
+                        </div>
+                      `
+                      document.querySelector("#checkboxMenu").innerHTML += html;
+                    });
+                  })
+              </script>
+            </div>
+          </li>
+          <li class="button">
+            <input type="submit" value="Enviar">
+          </li>
+        </ul>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+
+  <!-- Incluir Footer -->
+  <footer class="render-footer"></footer>
+
+  <!-- Llamar a función que incluye los templates -->
+  
+  <script>includeNavbar()</script>
+  <script>includeFooter()</script>
+</body>
+
+
+
+</html>
