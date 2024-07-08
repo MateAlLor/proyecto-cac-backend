@@ -80,7 +80,7 @@ app.post('/api/testpost', (req, res) => {
 //            SERVICIOS           //
 
 // MOSTRAR SERVICIOS
-app.get('/api/servicios', verificarToken, async (req, res) => {
+app.get('/api/servicios', async (req, res) => {
   try {
     const connection = await pool.getConnection();
     const [rows] = await connection.query('SELECT * FROM servicios');
