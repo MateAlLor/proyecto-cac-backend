@@ -1,14 +1,15 @@
 
 import { createPool } from "mysql2/promise";
-
+import 'dotenv/config'
 // const mysql = require('mysql2/promise')
+
 
 // Crear Pool de conexiones
 const pool = createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'cac_database_test',
+    host: process.env.MYSQL_ADDON_HOST,
+    user: process.env.MYSQL_ADDON_USER,
+    password: process.env.MYSQL_ADDON_PASSWORD,
+    database: process.env.MYSQL_ADDON_DB,
     waitForConnections: true,
     connectionLimit: 2,
     queueLimit: 0
