@@ -44,15 +44,19 @@
       <span class="visually-hidden">Next</span>
     </button>
   </div> -->
-  <section class="form-login">
 
-    <h5>Login</h5>
-    <input class="controls" type="text" name="usuario" value="" placeholder="Usuario">
-    <input class="controls" type="password" name="contrasena" value="" placeholder="Contraseña">
-    <input class="buttons" type="submit" name="" value="Ingresar">
-    <p><a href="#">¿Olvidastes tu Contraseña?</a></p>
+  <form action="/auth" method="post">
+    <div class="form-login">
 
-  </section>
+      <h5>Login</h5>
+      <input class="controls" type="text" name="usuario" value="" placeholder="Usuario">
+      <input class="controls" type="password" name="contrasena" value="" placeholder="Contraseña">
+      <input class="buttons" type="submit" name="" value="Ingresar">
+      <p><a href="#">¿Olvidastes tu Contraseña?</a></p>
+
+    </div>
+  </form>
+
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
     crossorigin="anonymous"></script>
@@ -68,4 +72,5 @@
   <script>includeFooter()</script>
 
 </body>
+
 </html>
