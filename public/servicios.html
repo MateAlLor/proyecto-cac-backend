@@ -50,7 +50,7 @@
   <div class="card-container">
     <section class="card-section" id="card-section">
       <script>
-        fetch("http://localhost:3000/api/servicios")
+        fetch("/api/servicios")
           .then(response => response.json())
           .then(data => {
             data.forEach(servicio => {
@@ -60,7 +60,7 @@
                     <img src="${servicio.imageURL}" class="card-img-top" alt="..." />
                     <h5 class="card-title">${servicio.nombre}</h5>
                     <p class="card-text">${servicio.descripcion}</p>
-                    <a href="#" class="btn btn-primary"></i> Editar Servicio</a>
+                    <a href="/service_modify.html?idServicio=${servicio.idServicio}" class="btn btn-primary"></i> Editar Servicio</a>
                   </div>
                 </div>
               `
@@ -70,14 +70,19 @@
             htmlAdd = `
             <div class="card">
               <div class="card-body">
-                <a href="http://localhost:3000/service_create.html" class="btn btn-primary"></i>Añadir Nuevo Servicio</a>
+                <a href="/service_create.html" class="btn btn-primary"></i>Añadir Nuevo Servicio</a>
               </div>
-            </div>  
+            </div>
             `
-            
-            document.querySelector("#card-section").innerHTML += htmlAdd;
 
+            document.querySelector("#card-section").innerHTML += htmlAdd;
           })
+
+
+
+
+
+
       </script>
 
     </section>

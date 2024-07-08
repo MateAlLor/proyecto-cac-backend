@@ -17,24 +17,24 @@
 
   <h1>Registrar nuevo Servicio</h1>
 
-  <form onsubmit="validarFormulario(event, ['name', 'desc', 'precio', 'url'])" action="/api/testpost" method="post">
+  <form onsubmit="validarFormulario(event, ['nombre', 'desc', 'precio', 'url'])" action="/api/servicios" method="post">
     <div class="formulario">
       <ul class="form-container">
         <li class="group">
-          <label for="name" class="form-label">Nombre</label>
-          <input type="text" class="name form-input" id="name" name="name" placeholder="" />
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" class="nombre form-input" id="nombre" name="nombre" placeholder="" />
         </li>
         <li class="group">
-          <label for="desc" class="form-label">Descripción</label>
-          <input type="text" class="desc form-input" id="desc" name="desc" placeholder="" />
+          <label for="descripcion" class="form-label">Descripción</label>
+          <input type="text" class="descripcion form-input" id="descripcion" name="descripcion" placeholder="" />
         </li>
         <li class="group">
           <label for="precio" class="form-label">Precio</label>
           <input type="number" class="precio form-input" id="precio" name="precio" placeholder="" />
         </li>
         <li class="group">
-          <label for="url" class="form-label">URL de la imagen</label>
-          <input type="text" class="url form-input" id="url" name="url" placeholder="" />
+          <label for="imageURL" class="form-label">URL de la imagen</label>
+          <input type="text" class="imageURL form-input" id="imageURL" name="imageURL" placeholder="" />
         </li>
         <li class="button">
           <input type="submit" value="Enviar">

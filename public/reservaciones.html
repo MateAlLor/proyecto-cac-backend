@@ -13,6 +13,7 @@
   <!-- Aclaración: El uso de este script, al implementarlo colocando el atributo "include-html" tira error en validator.w3.org -->
   <script src="assets/scripts/template_include.js"></script>
   <script src="https://kit.fontawesome.com/27acf753ad.js" crossorigin="anonymous"></script>
+  <script src="assets/scripts/validarFormulario.js"></script>
 
 </head>
 
@@ -50,16 +51,16 @@
   <div class="card-container">
     <section class="card-section" id="card-section">
       <script>
-        fetch("http://localhost:3000/api/reservas")
+        fetch("/api/reservas")
           .then(response => response.json())
           .then(data => {
             data.forEach(reserva => {
 
-              fetch(`http://localhost:3000/api/clientes/${reserva.idCliente}`)
+              fetch(`/api/clientes/${reserva.idCliente}`)
                 .then(responseClient => responseClient.json())
                 .then(dataClient => {
 
-                  fetch(`http://localhost:3000/api/detallereserva/${reserva.idReserva}`)
+                  fetch(`/api/detallereserva/${reserva.idReserva}`)
                     .then(responseDetRes => responseDetRes.json())
                     .then(dataDetRes => {
 
@@ -75,9 +76,10 @@
                                 <p class="card-text">Fecha: ${reserva.fecha.split('T')[0]}</p>
                                 <p class="card-text">Hora: ${reserva.hora}</p>
                                 <p class="card-text">Monto total: ${montoTotal}$</p>
-                                
-                                
-                                <a href="#" class="btn btn-primary"></i> Editar Reserva</a>
+
+                                <form onsubmit="validarDelete(event)" action="/api/reservas/delete/${reserva.idReserva}" method="get">
+                                <input type="submit" class="btn btn-primary" value="Borrar">
+                                </form>
                               </div>
                             </div>
                           `
@@ -93,7 +95,7 @@
             htmlAdd = `
             <div class="card">
               <div class="card-body">
-                <a href="http://localhost:3000/reserva_create.html" class="btn btn-primary"></i>Añadir Nueva Reserva</a>
+                <a href="/reserva_create.html" class="btn btn-primary"></i>Añadir Nueva Reserva</a>
               </div>
             </div>  
             `

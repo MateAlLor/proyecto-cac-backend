@@ -1,29 +1,86 @@
 import pool from './config/db.js';
 import express from 'express';
+import jwt from 'jsonwebtoken';
+import cookieParser from 'cookieparser'
+import 'dotenv/config'
 
-const app = express()
-const port = 3000
+const SECRET_KEY = process.env.SECRET_KEY;
+const app = express();
+const port = 3000;
 // const mysql = require('mysql2/promise')
 
 
-app.use(express.static('public'))
+app.use(express.static('public'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }))
-app.use(express.static('public'))
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static('public'));
+// app.use(cookieParser());
+
+function verificarToken(req, res, next) {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(404).send({ message: 'No token provided!' });
+  } else {
+    try {
+      const decoded = jwt.verify(token, SECRET_KEY);
+      console.log("decoded", decoded)
+      req.user = decoded;
+      next();
+
+    } catch (error) {
+      res.status(401).send('Token no válido')
+
+    }
+  }
+}
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html')
+  res.sendFile(__dirname + '/public/login.html');
+});
+
+app.post('/login', async (req, res) => {
+  try {
+    const connection = await pool.getConnection();
+    const [rows] = await connection.query('SELECT * FROM usuarios');
+    connection.release();
+
+    const { usuario, password } = req.body;
+
+    let validado = false
+    rows.forEach(row => {
+      console.log(`${usuario} = ${row.usuario} && ${password} == ${row.password}`)
+      if (usuario === row.usuario && password === row.password) {
+        validado = true
+      }
+    })
+
+    if (validado) {
+      const token = jwt.sign({ usuario }, SECRET_KEY, { expiresIn: '24h' })
+      res.cookie('token', token, {
+        httpOnly: true, 
+        secure: false,
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
+      }).send('Login Exitoso');
+    } else {
+      res.status(401).send('Credenciales no válidas')
+    }
+
+  } catch (err) {
+    console.error('Error connecting to database', err);
+    res.status(500).send('Internal server error');
+  }
 })
 
+
 app.post('/api/testpost', (req, res) => {
-  console.log(req.body)
-  res.json(req.body)
-})
+  console.log(req.body);
+  res.json(req.body);
+});
 
 //            SERVICIOS           //
 
 // MOSTRAR SERVICIOS
-app.get('/api/servicios', async (req, res) => {
+app.get('/api/servicios', verificarToken, async (req, res) => {
   try {
     const connection = await pool.getConnection();
     const [rows] = await connection.query('SELECT * FROM servicios');
@@ -32,9 +89,9 @@ app.get('/api/servicios', async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error('Error connecting to database', err);
-    res.status(500).send('Internal server error')
+    res.status(500).send('Internal server error');
   }
-})
+});
 
 // CREAR NUEVO SERVICIO
 app.post('/api/servicios', async (req, res) => {
@@ -46,9 +103,9 @@ app.post('/api/servicios', async (req, res) => {
     res.json({ id: result.indertID, nombre, descripcion, precio });
   } catch (err) {
     console.error('Error connecting to database', err);
-    res.status(500).send('Internal server error')
+    res.status(500).send('Internal server error');
   }
-})
+});
 
 // MOSTRAR SERVICIO ESPECÍFICO
 app.get('/api/servicios/:id', async (req, res) => {
@@ -215,8 +272,32 @@ app.get('/api/reservas', async (req, res) => {
 app.post('/api/reservas', async (req, res) => {
   try {
     const connection = await pool.getConnection();
-    const [result] = await connection.query('INSERT INTO reservas SET ?', [req.body]);
+
+    const { radioButton, fecha, hora } = req.body;
+    const newReq = {
+      idCliente: radioButton,
+      fecha: fecha,
+      hora: hora
+    }
+
+
+
+    const [result] = await connection.query('INSERT INTO reservas SET ?', [newReq]);
+
+
+    const [rows] = await connection.query('SELECT LAST_INSERT_ID() as id');
+    const lastInsertId = rows[0].id;
+
+    let count = 0;
+    for (let key in req.body) {
+      if (!isNaN(key)) {
+        const [result] = await connection.query('INSERT INTO detallereserva (idReserva, idServicio) VALUES (?, ?)', [lastInsertId, key]);
+      }
+      count++;
+    }
+
     connection.release();
+
     res.json(req.body);
   } catch (err) {
     console.error('Error connecting to database', err);
@@ -244,24 +325,6 @@ app.get('/api/reservas/:id', async (req, res) => {
   }
 })
 
-// // ACTUALIZAR RESERVAS
-// app.post('/api/reservas/:id', async (req, res) => {  
-// try {
-//   const reservaID = req.params.id
-//   const connection = await pool.getConnection();
-//   const [result] = await connection.query('UPDATE reservas SET ? WHERE idReserva = ?', [req.body, reservaID]);
-//   connection.release();
-
-//   if (result.affectedRows === 0) {
-//     res.status(400).json({mensaje: 'Reserva no encontrada'})
-//   } else {
-//     res.json({mensaje: 'Reserva actualizada correctamene'})
-//   }
-// } catch (err) {
-//   console.error('Error connecting to database', err);
-//   res.status(500).send('Internal server error')
-// }
-// })
 
 // BORRAR RESERVAS
 app.get('/api/reservas/delete/:id', async (req, res) => {

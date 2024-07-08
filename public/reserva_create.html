@@ -15,6 +15,49 @@
   <script src="assets/scripts/template_include.js"></script>
   <script src="https://kit.fontawesome.com/27acf753ad.js" crossorigin="anonymous"></script>
 
+  <script>
+    function procesarFormulario(event) {
+      if (validarFormulario(event, ['fecha', 'hora'], ['checkboxMenu'], ['radioGroup'])) {
+        event.preventDefault();
+
+        // Tomar y procesar los datos del formulario
+        const form = document.getElementById('formulario');
+        const formData = new FormData(form);
+
+
+
+        const datosProcesados = {
+          fecha: formData.get('fecha'),
+          hora: formData.get('hora'),
+          idCliente: formData.get('radiobutton'),
+          url: formData.get('url')
+        };
+
+        fetch('/api/testpost', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          // body: formData
+          body: JSON.stringify(formData)
+          // body: JSON.stringify(datosProcesados)
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Respuesta del servidor:', data);
+            // Puedes mostrar un mensaje de éxito, redirigir, etc.
+            alert('Datos enviados exitosamente');
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            alert('Ocurrió un error al enviar los datos');
+          });
+
+
+      }
+    }
+  </script>
+
 </head>
 
 <body>
@@ -55,14 +98,14 @@
 
     <!-- Formulario -->
     <!-- El Form que cumple con todos los requisitos del TP es el de "Contacto" -->
-    <form onsubmit="validarFormulario(['fecha', 'hora'], ['checkboxMenu'], ['radioGroup'])" action="/api/testpost" method="post">
+    <form id="formulario" action="/api/reservas" onsubmit="validarFormulario(event, ['fecha', 'hora'], ['checkboxMenu'], ['radioGroup'])" method="post">
       <div class="formulario">
         <ul class="form-container">
           <li class="group">
             <h4 class="form-label">Selecciona el cliente:</h4>
             <div class="radioGroup" id="radioGroup">
               <script>
-                fetch("http://localhost:3000/api/clientes")
+                fetch("/api/clientes")
                   .then(response => response.json())
                   .then(data => {
                     data.forEach(cliente => {
@@ -80,26 +123,26 @@
           </li>
           <li class="group">
             <h4 for="fecha" class="form-label">Fecha de Reserva: </h4>
-            <input type="date" class="fecha form-input" id="fecha" placeholder="" />
+            <input type="date" class="fecha form-input" name="fecha" id="fecha" placeholder="" />
           </li>
           <ul class="form-container">
             <li class="group">
               <h4 for="hora" class="form-label">Hora de Reserva: </h4>
-              <input type="time" class="hora form-input" id="hora" placeholder="" />
+              <input type="time" class="hora form-input" name="hora" id="hora" placeholder="" />
             </li>
             <li class="group">
               <!-- Checkbox del formulario -->
               <h4 class="form-label">Selecciona los servicios deseados:</h4>
               <div class="checkboxMenu" id="checkboxMenu">
                 <script>
-                  fetch("http://localhost:3000/api/servicios")
+                  fetch("/api/servicios")
                     .then(response => response.json())
                     .then(data => {
                       data.forEach(servicio => {
                         html = `
                         <div class="checkboxOption">
-                          <label for="s${servicio.idServicio}" class="form-label">${servicio.nombre}</label>
-                          <input type="checkbox" id="s${servicio.idServicio}" name="s${servicio.idServicio}" value="true">
+                          <label for="${servicio.idServicio}" class="form-label">${servicio.nombre}</label>
+                          <input type="checkbox" id="${servicio.idServicio}" name="${servicio.idServicio}" value="true">
                         </div>
                       `
                         document.querySelector("#checkboxMenu").innerHTML += html;

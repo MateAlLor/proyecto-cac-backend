@@ -50,42 +50,62 @@
   </div>
 
   <div class="title">
-    <h1>Registrar Cliente</h1>
+    <h1>Modificar Cliente</h1>
   </div>
-  <div>
+  <div id="form-container">
 
     <!-- Formulario -->
     <!-- El Form que cumple con todos los requisitos del TP es el de "Contacto" -->
-    <form onsubmit="validarFormulario(event, ['apellidos', 'nombres', 'direccion', 'telefono', 'email'])" action="/api/clientes" method="post">
-      <div class="formulario">
-        <ul class="form-container">
-          <li class="group">
-            <label for="apellidos" class="form-label">Apellidos</label>
-            <input type="text" class="apellidos form-input" name="apellidos" id="apellidos" placeholder="" />
-          </li>
-          <li class="group">
-            <label for="nombres" class="form-label">Nombres</label>
-            <input type="text" class="nombres form-input" name="nombres" id="nombres" placeholder="" />
-          </li>
-          <li class="group">
-            <label for="direccion" class="form-label">Dirección</label>
-            <input type="text" class="direccion form-input" name="direccion" id="direccion" placeholder="" />
-          </li>
-          <li class="group">
-            <label for="telefono" class="form-label">Teléfono</label>
-            <input type="telefono" class="tel form-input" name="telefono" id="telefono" placeholder="" />
-          </li>
-          <li class="group">
-            <label for="email" class="form-label">Correo Electrónico</label>
-            <input type="mail" class="email form-input" name="email" id="email" placeholder="" />
-          </li>
-          <li class="button">
-            <input type="submit" value="Enviar">
-          </li>
-        </ul>
-      </div>
-    </form>
   </div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const idCliente = urlParams.get('idCliente');
+
+    fetch(`/api/clientes/${idCliente}`)
+      .then(response => response.json())
+      .then(data => {
+
+        htmlAdd = `
+              <h3>ID del cliente: ${data.idCliente}</h3>
+              <form onsubmit="validarFormulario(event, ['apellidos', 'nombres', 'direccion', 'telefono', 'email'])" action="/api/clientes/${idCliente}" method="post">
+                <div class="formulario">
+                  <ul class="form-container">
+                      <li class="group" id="apellidos">
+                        <label for="apellidos" class="form-label">Apellidos</label>
+                        <input type="text" class="apellidos form-input" name="apellidos" id="apellidos" placeholder="" value="${data.apellidos}" />
+                      </li>
+                      <li class="group">
+                        <label for="nombres" class="form-label">Nombres</label>
+                        <input type="text" class="nombres form-input" name="nombres" id="nombres" value="${data.nombres}" placeholder="" />
+                      </li>
+                      <li class="group">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input type="text" class="direccion form-input" name="direccion" id="direccion" value="${data.direccion}" placeholder="" />
+                      </li>
+                      <li class="group">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="tel" class="telefono form-input" name="telefono" id="telefono" value="${data.telefono}" placeholder="" />
+                      </li>
+                      <li class="group">
+                        <label for="email" class="form-label">Correo Electrónico</label>
+                        <input type="mail" class="email form-input" name="email" id="email" value="${data.email}" placeholder="" />
+                      </li>
+                      <li class="button">
+                        <input type="submit" value="Modificar">
+                      </li>  
+                  </ul>
+                </div>
+              </form>
+              <h3>Otras Opciones</h3>
+              <form onsubmit="validarDelete(event)" action="/api/clientes/delete/${idCliente}" method="get">
+              <input type="submit" value="BORRAR CLIENTE">
+              </form>
+          `
+
+        document.querySelector("#form-container").innerHTML += htmlAdd;
+
+      })
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
@@ -98,7 +118,7 @@
   <footer class="render-footer"></footer>
 
   <!-- Llamar a función que incluye los templates -->
-  
+
   <script>includeNavbar()</script>
   <script>includeFooter()</script>
 </body>
